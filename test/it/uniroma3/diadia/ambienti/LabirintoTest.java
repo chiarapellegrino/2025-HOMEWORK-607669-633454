@@ -1,31 +1,37 @@
 package it.uniroma3.diadia.ambienti;
 
+import static org.junit.Assert.assertEquals;
 
-import static org.junit.Assert.*;
-
+import org.junit.Before;
 import org.junit.Test;
 
 public class LabirintoTest {
-	private final Labirinto l = new Labirinto();
-	private final Stanza si = new Stanza("Atrio");
-	private final Stanza sd = new Stanza("aula n10");
-	private final Stanza sv = new Stanza("Biblioteca");
-	
-	@Test
-	public void testGetStanzaIniziale() {
-		assertEquals(si.getNome(), l.getStanzaIniziale().getNome());
-	}
-	
-	@Test
-	public void testGetStanzaVincente() {
-		assertEquals(sv.getNome(), l.getStanzaFinale().getNome());
-	}
-	
-	@Test
-	public void testStanzaInzialeDiversoAtrio() {
-		assertFalse(l.getStanzaIniziale().getNome()== sd.getNome());
-	}
-	
-	
+
+    private Labirinto labirinto;
+    private Stanza stanzaPersonalizzata;
+
+    @Before
+    public void setUp() {
+        labirinto = new Labirinto();
+        labirinto.creaStanze();
+        stanzaPersonalizzata = new Stanza("DS1");
+    }
+
+    @Test
+    public void getStanzaVincente_DeveRestituireBiblioteca() {
+        assertEquals("Biblioteca", labirinto.getStanzaVincente().getNome());
+    }
+
+    @Test
+    public void setStanzaCorrente_AggiornaLaStanzaCorrente() {
+        labirinto.setStanzaCorrente(stanzaPersonalizzata);
+        assertEquals(stanzaPersonalizzata, labirinto.getStanzaCorrente());
+    }
+
+    @Test
+    public void getStanzaCorrente_AllInizioDiPartita_RitornaAtrio() {
+        assertEquals("Atrio", labirinto.getStanzaCorrente().getNome());
+    }
 }
+
 
