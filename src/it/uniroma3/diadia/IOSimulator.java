@@ -1,56 +1,56 @@
 package it.uniroma3.diadia;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class IOSimulator implements IO {
 
-    private static final int CAPACITY = 100;
+	private List<String> righeLette;
+	private int indiceRigheLette;
 
-    private final String[] righeLette;
-    private final String[] messaggiProdotti;
-    private int indiceRiga = 0;
-    private int indiceMessaggioScritto = 0;
-    private int indiceMessaggioLetto = 0;
+	public List<String> getMessaggiProdotti() {
+		return messaggiProdotti;
+	}
 
-    public IOSimulator(String[] righeDaLeggere) {
-        this.righeLette = righeDaLeggere != null
-            ? righeDaLeggere.clone()
-            : new String[0];
-        this.messaggiProdotti = new String[CAPACITY];
-    }
+	public void setMessaggiProdotti(List<String> messaggiProdotti) {
+		this.messaggiProdotti = messaggiProdotti;
+	}
+
+	//forse si potrebbe inserire una mappa al posto della lista per ricordare ogni riga letta quale messaggi abbia prodotto
+	private List<String> messaggiProdotti;
+	private int indiceMessaggiProdotti;
+	private int indiceMessaggiMostrati;
+
+	public IOSimulator(List<String> righeDaLeggere) {
+		this.righeLette = righeDaLeggere;
+		this.indiceRigheLette = 0;
+		this.indiceMessaggiMostrati = 0;
+		this.messaggiProdotti = new ArrayList<String>();
+	}
 
 	@Override
-    public String leggiRiga() {
-        if (indiceRiga < righeLette.length) {
-            return righeLette[indiceRiga++];
-        }
-        return null;
-    }
+	public String leggiRiga() {
+		String riga = null;
 
-    @Override
-    public void mostraMessaggio(String msg) {
-        if (indiceMessaggioScritto < messaggiProdotti.length) {
-            messaggiProdotti[indiceMessaggioScritto++] = msg;
-        }
-    }
+		riga = this.righeLette.get(indiceRigheLette);
+		this.indiceRigheLette++;
+		return riga;
+	}
 
-    public boolean hasNextMessaggio() {
-        return indiceMessaggioLetto < indiceMessaggioScritto;
-    }
+	@Override
+	public void mostraMessaggio(String msg) {
+		this.messaggiProdotti.add(this.indiceMessaggiProdotti, msg);
+		this.indiceMessaggiProdotti++;
+	}
 
-    public String nextMessaggio() {
-        if (hasNextMessaggio()) {
-            return messaggiProdotti[indiceMessaggioLetto++];
-        }
-        return null;
-    }
+	public String nextMessaggio() {
+		String next = this.messaggiProdotti.get(indiceMessaggiMostrati);
+		this.indiceMessaggiMostrati++;
+		return next;
+	}
 
-    public String[] getMessaggiProdotti() {
-        String[] risultato = new String[indiceMessaggioScritto];
-        for (int i = 0; i < indiceMessaggioScritto; i++) {
-            risultato[i] = messaggiProdotti[i];
-        }
-        return risultato;
-    }
+	public boolean hasNextMessaggio() {
+		return this.indiceMessaggiMostrati < this.indiceMessaggiProdotti;
+	}
+
 }
-

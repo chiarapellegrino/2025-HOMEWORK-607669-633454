@@ -3,39 +3,47 @@ package it.uniroma3.diadia;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.io.FileNotFoundException;
+
 import org.junit.Before;
 import org.junit.Test;
 
+import it.uniroma3.diadia.ambienti.Labirinto;
 import it.uniroma3.diadia.ambienti.Stanza;
 
 public class PartitaTest {
 
-    private Partita partita;
-    private Stanza stanzaFittizia;
+	Labirinto labirinto;
+	Partita p;
+	Stanza s;
 
-    @Before
-    public void setUp() {
-        partita = new Partita();
-        stanzaFittizia = new Stanza("Stanza");
-    }
+	@Before
+	public void setUp() throws FileNotFoundException, FormatoFileNonValidoException {
+		 labirinto = Labirinto.newBuilder("labirinto2.txt").getLabirinto();
+//				.addStanzaIniziale("Atrio")
+//				.addAttrezzo("martello", 3)
+//				.addStanzaVincente("Biblioteca")
+//				.addAdiacenza("Atrio", "Biblioteca", "nord")
+//				.getLabirinto();
+		 p = new Partita(labirinto);
+		 s = new Stanza("Stanza");
+	}
+	
+	@Test
+	public void testGetStanzaVincente() {
+		assertEquals("Biblioteca", p.getLabirinto().getStanzaVincente().getNome());
+	}
 
-    @Test
-    public void getStanzaVincente_DeveRestituireBiblioteca() {
-        String nomeAtteso = "Biblioteca";
-        String nomeReale = partita.getLabirinto()
-                                   .getStanzaVincente()
-                                   .getNome();
-        assertEquals(nomeAtteso, nomeReale);
-    }
+	@Test
+	public void testSetStanzaCorrente() {
+		p.getLabirinto().setStanzaCorrente(s);
+		assertEquals(s, p.getLabirinto().getStanzaCorrente());
+	}
 
-    @Test
-    public void setStanzaCorrente_AggiornaLaStanzaNelLabirinto() {
-        partita.getLabirinto().setStanzaCorrente(stanzaFittizia);
-        assertEquals(stanzaFittizia, partita.getLabirinto().getStanzaCorrente());
-    }
-
-    @Test
-    public void isFinita_AllInizioDiPartita_RitornaFalse() {
-        assertFalse(partita.isFinita());
-    }
+	@Test
+	public void testIsFinita() {
+		
+		assertFalse(p.isFinita());
+	}
+	
 }

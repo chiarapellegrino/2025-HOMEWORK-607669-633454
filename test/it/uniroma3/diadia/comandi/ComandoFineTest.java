@@ -1,39 +1,42 @@
 package it.uniroma3.diadia.comandi;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import it.uniroma3.diadia.DiaDia;
 import it.uniroma3.diadia.IOSimulator;
-import it.uniroma3.diadia.Partita;
+import it.uniroma3.diadia.fixture.Fixture;
 
-class ComandoFineTest {
+public class ComandoFineTest {
 
-    private ComandoFine comando;
-    private IOSimulator io;
-    private Partita partita;
+	List<String> righeDaLeggere;
 
-    @BeforeEach
-    void setUp() {
-        comando = new ComandoFine();
-        io      = new IOSimulator(new String[] {});
-        comando.setIo(io);
-        partita = new Partita();
-    }
+	@Before
+	public void setUp() throws Exception {
+		righeDaLeggere = new ArrayList<>();
+	}
 
-    @Test
-    void esegui_TerminatesPartita() {
-        assertFalse(partita.isFinita(), "La partita non dovrebbe essere già terminata");
-        comando.esegui(partita);
-        assertTrue(partita.isFinita(), "Il comando fine dovrebbe terminare la partita");
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    @Test
-    void esegui_ShowsFarewellMessage() {
-        comando.esegui(partita);
-        String[] output = io.getMessaggiProdotti();
-        assertEquals(1, output.length, "Dovrebbe essere stato mostrato esattamente un messaggio");
-        assertEquals(ComandoFine.MESSAGGIO_FINE, output[0], "Il messaggio mostrato non corrisponde");
-    }
+	@Test
+	public void testPartitaConComandoFine() throws Exception {
+		righeDaLeggere.add("fine");
+
+		IOSimulator io = Fixture.creaSimulazionePartitaEGiocaEasy(righeDaLeggere);
+		assertTrue(io.hasNextMessaggio());
+		assertEquals(DiaDia.MESSAGGIO_BENVENUTO, io.nextMessaggio());
+		assertTrue(io.hasNextMessaggio());
+		assertEquals(ComandoFine.MESSAGGIO_FINE, io.nextMessaggio());
+
+	}
+
 }
